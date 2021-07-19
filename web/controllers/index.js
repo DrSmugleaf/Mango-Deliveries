@@ -2,14 +2,19 @@
 // Copyright (c) 2017 DrSmugleaf
 //
 
-"use strict"
-const express = require("express")
-const router = express.Router()
+import { Router } from "express"
+import { router as eveRouter, init as eveInit } from "./eve.js"
 
-router.use("/", require("./eve"))
+export var router
 
-router.get("*", function(req, res) {
-  res.render("pages/404")
-})
+export function init() {
+  eveInit()
 
-module.exports = router
+  router = Router()
+
+  router.use("/", eveRouter)
+
+  router.get("*", function(req, res) {
+    res.render("pages/404")
+  })
+}

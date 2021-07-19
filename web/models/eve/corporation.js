@@ -2,43 +2,35 @@
 // Copyright (c) 2017 DrSmugleaf
 //
 
-"use strict"
+import Sequelize from "sequelize"
 
-const { Model, DataTypes } = require("sequelize")
-const winston = require("winston")
+class AllowedCorporations extends Sequelize.Model {}
 
-class AllowedCorporations extends Model {}
+export function init(db) {
+  console.log("Initializing corporations")
 
-module.exports = {
-  db: null,
+  AllowedCorporations.init({
+    name: {
+      type: Sequelize.STRING(32),
+      primaryKey: true
+    }
+  }, {
+    sequelize: db
+  })
+}
 
-  init(db) {
-    winston.info("Initializing corporations")
-    this.db = db
+export function allow(name) {
+  AllowedCorporations.build({ name: name }).save()
+}
 
-    AllowedCorporations.init({
-      name: {
-        type: DataTypes.STRING(32),
-        primaryKey: true
-      }
-    }, {
-      sequelize: this.db
-    })
-  },
+export function disallow(name) {
+  AllowedCorporations.build({ name: name }).destroy()
+}
 
-  allow(name) {
-    AllowedCorporations.build({name: name}).save()
-  },
+export function getAllowed() {
+  return AllowedCorporations.findAll()
+}
 
-  disallow(name) {
-    AllowedCorporations.build({name: name}).destroy()
-  },
-
-  getAllowed() {
-    return AllowedCorporations.findAll()
-  },
-
-  async isAllowed(name) {
-    return AllowedCorporations.findOne({where: {name: name}}).then(c => c !== null)
-  }
+export async function isAllowed(name) {
+  return AllowedCorporations.findOne({ where: { name: name } }).then(c => c !== null)
 }

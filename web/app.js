@@ -2,21 +2,21 @@
 // Copyright (c) 2017 DrSmugleaf
 //
 
-require("dotenv").config()
-require("checkenv").check()
-if(process.env.NODE_ENV === "dev") require("longjohn")
+import { config } from "dotenv"
+config()
 
-const winston = require("winston")
-const { transports } = require("winston")
-winston.add(new transports.Console({
-  format: winston.format.simple()
-}))
+if (process.env.NODE_ENV === "dev") import("longjohn")
 
-require("./db")
-const express = require("express")
+import { init } from "./db.js"
+init()
+
+import express, { json, urlencoded, static as serveStatic } from "express"
 const app = express()
-const helmet = require("helmet")
-const path = require("path")
+import helmet from "helmet"
+import path from "path"
+import morgan from "morgan"
+import pug from "pug"
+import { router, init as controllersInit } from "./controllers/index.js"
 
 app.use(helmet({
   contentSecurityPolicy: {
@@ -24,22 +24,25 @@ app.use(helmet({
   }
 }))
 app.set("trust proxy", 1)
-app.use(express.json())
-app.use(express.urlencoded({ extended: true }))
-app.use(require("morgan")("dev"))
-app.engine("pug", require("pug").__express)
-app.set("views", path.join(__dirname + "/views"))
+app.use(json())
+app.use(urlencoded({ extended: true }))
+app.use(morgan("dev"))
+app.engine("pug", pug.__express)
+app.set("views", path.join(path.resolve() + "/web/views"))
 app.set("view engine", "pug")
-app.use(express.static(path.join(__dirname + "/public")))
-app.use(require("./controllers"))
+app.use(serveStatic(path.join(path.resolve() + "/web/public")))
+
+controllersInit()
+app.use(router)
+
 app.locals.character = {}
 
 if(process.env.NODE_ENV !== "dev") {
   app.use("*", function(e, req, res, next) {
-    winston.info(e.stack)
+    console.error(e)
     res.status(500).render("pages/500")
     next()
   })
 }
 
-module.exports = app
+export default app

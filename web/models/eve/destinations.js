@@ -2,50 +2,41 @@
 // Copyright (c) 2017 DrSmugleaf
 //
 
-"use strict"
+import Sequelize from "sequelize"
 
-const { Model, DataTypes } = require("sequelize")
-const winston = require("winston")
+class EveDestinations extends Sequelize.Model {}
 
-class EveDestinations extends Model {}
+export async function init(db) {
+  console.log("Initializing destinations")
 
-module.exports = {
-  EveDestinations: EveDestinations,
-  db: null,
+  EveDestinations.init({
+    name: {
+      type: Sequelize.STRING(32),
+      primaryKey: true
+    },
+    image: {
+      type: Sequelize.TEXT({
+        length: "tiny"
+      }),
+      allowNull: false
+    }
+  }, {
+    sequelize: db
+  })
+}
 
-  async init(db) {
-    winston.info("Initializing destinations")
-    this.db = db
+export function add(data) {
+  return EveDestinations.build(data).save()
+}
 
-    EveDestinations.init({
-      name: {
-        type: DataTypes.STRING(32),
-        primaryKey: true
-      },
-      image: {
-        type: DataTypes.TEXT({
-          length: "tiny"
-        }),
-        allowNull: false
-      }
-    }, {
-      sequelize: this.db
-    })
-  },
+export function get(name) {
+  return EveDestinations.findOne({ where: { name: name } })
+}
 
-  add(data) {
-    return EveDestinations.build(data).save()
-  },
+export function getAll() {
+  return EveDestinations.findAll()
+}
 
-  get(name) {
-    return EveDestinations.findOne({where: {name: name}})
-  },
-
-  getAll() {
-    return EveDestinations.findAll()
-  },
-
-  remove(name) {
-    return EveDestinations.findOne({name: name}).destroy()
-  }
+export function remove(name) {
+  return EveDestinations.findOne({ name: name }).destroy()
 }

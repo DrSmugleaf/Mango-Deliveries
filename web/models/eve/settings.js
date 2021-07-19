@@ -2,36 +2,28 @@
 // Copyright (c) 2017 DrSmugleaf
 //
 
-"use strict"
+import Sequelize from "sequelize"
 
-const { Model, DataTypes } = require("sequelize")
-const winston = require("winston")
+class Settings extends Sequelize.Model {}
 
-class Settings extends Model {}
+export function init(db) {
+  console.log("Initializing settings")
 
-module.exports = {
-  db: null,
+  Settings.init({
+    maxVolume: {
+      type: Sequelize.BIGINT.UNSIGNED,
+      allowNull: false,
+      defaultValue: 300000
+    }
+  }, {
+    sequelize: db
+  })
+}
 
-  async init(db) {
-    winston.info("Initializing settings")
-    this.db = db
+export function get() {
+  return Settings.findAll()
+}
 
-    Settings.init({
-      maxVolume: {
-        type: DataTypes.BIGINT.UNSIGNED,
-        allowNull: false,
-        defaultValue: 300000
-      }
-    }, {
-      sequelize: this.db
-    })
-  },
-
-  get() {
-    return Settings.findAll()
-  },
-
-  set(data) {
-    return Settings.upsert(Settings.build(data))
-  }
+export function set(data) {
+  return Settings.upsert(Settings.build(data))
 }

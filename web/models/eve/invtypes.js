@@ -2,75 +2,67 @@
 // Copyright (c) 2017 DrSmugleaf
 //
 
-"use strict"
-const { Model, DataTypes } = require("sequelize")
-const fs = require("fs")
-const YAML = require("yaml")
-const winston = require("winston")
+import Sequelize from "sequelize"
+import { readFileSync } from "fs"
+import yamlParse from "yaml"
 
-class InvTypes extends Model {}
-class EveBannedTypes extends Model {}
+class InvTypes extends Sequelize.Model {}
+class EveBannedTypes extends Sequelize.Model {}
 
-module.exports = {
-  db: null,
+export function initTable(model, tableName, db) {
+  console.log(`Initializing ${tableName}`)
 
-  initTable(model, tableName) {
-    winston.info(`Initializing ${tableName}`)
+  model.init({
+    itemId: {
+      type: Sequelize.INTEGER.UNSIGNED,
+      primaryKey: true
+    },
+    itemName: {
+      type: Sequelize.STRING(255),
+      allowNull: false
+    }
+  }, {
+    sequelize: db,
+    modelName: tableName
+  })
+}
 
-    model.init({
-      itemId: {
-        type: DataTypes.INTEGER.UNSIGNED,
-        primaryKey: true
-      },
-      itemName: {
-        type: DataTypes.STRING(255),
-        allowNull: false
-      }
-    }, {
-      sequelize: this.db,
-      modelName: tableName
-    })
-  },
+export async function init(db) {
+  initTable(InvTypes, "invtypes", db)
+  initTable(EveBannedTypes, "eve_banned_types", db)
+}
 
-  async init(db) {
-    this.db = db
+export async function parse() {
+  const file = readFileSync("./sde/bsd/invNames.yaml", "utf8")
+  const names = yamlParse(file)
 
-    this.initTable(InvTypes, "invtypes")
-    this.initTable(EveBannedTypes, "eve_banned_types")
-  },
+  await InvTypes.bulkCreate(names)
+}
 
-  async import() {
-    const file = fs.readFileSync("./sde/bsd/invNames.yaml", "utf8")
-    const names = YAML.parse(file)
+export function allow(id) {
+  EveBannedTypes.destroy({ where: { itemId: id } })
+}
 
-    await InvTypes.bulkCreate(names)
-  },
+export function ban(data) {
+  EveBannedTypes.build(data).save()
+}
 
-  allow(id) {
-    EveBannedTypes.destroy({where: {itemId: id}})
-  },
+export function get(id) {
+  return InvTypes.findByPk(id)
+}
 
-  ban(data) {
-    EveBannedTypes.build(data).save()
-  },
+export function getBanned() {
+  return EveBannedTypes.findAll()
+}
 
-  get(id) {
-    return InvTypes.findByPk(id)
-  },
+export function getByName(name) {
+  return InvTypes.findOne({ where: { itemName: name } })
+}
 
-  getBanned() {
-    return EveBannedTypes.findAll()
-  },
+export async function isIDBanned(id) {
+  return EveBannedTypes.findByPk(id).then(t => t !== null)
+}
 
-  getByName(name) {
-    return InvTypes.findOne({where: {itemName: name}})
-  },
-
-  async isIDBanned(id) {
-    return EveBannedTypes.findByPk(id).then(t => t !== null)
-  },
-
-  async isNameBanned(name) {
-    return EveBannedTypes.findOne({where: {itemName: name}}).then(t => t !== null)
-  }
+export async function isNameBanned(name) {
+  return EveBannedTypes.findOne({ where: { itemName: name } }).then(t => t !== null)
 }

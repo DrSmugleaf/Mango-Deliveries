@@ -2,53 +2,40 @@
 // Copyright (c) 2017 DrSmugleaf
 //
 
-"use strict"
+import Sequelize from "sequelize"
+import fs from "fs"
+import YAML from "yaml"
 
-const { Model, DataTypes } = require("sequelize")
-const fs = require("fs")
-const YAML = require("yaml")
-const { getByName } = require("./character")
-const winston = require("winston")
+class InvVolumes extends Sequelize.Model {}
 
-class InvVolumes extends Model {}
+export async function init(db) {
+  console.log("Initializing invvolumes")
 
-module.exports = {
-  db: null,
-  tableName: "typeIDs",
+  InvVolumes.init({
+    typeId: {
+      type: Sequelize.INTEGER.UNSIGNED,
+      primaryKey: true
+    },
+    volume: {
+      type: Sequelize.DOUBLE,
+      allowNull: true
+    }
+  }, {
+    sequelize: db
+  })
+}
 
-  async init(db) {
-    winston.info("Initializing invvolumes")
-    this.db = db
+export async function parse(db) {
+  // TODO
+  // const file = fs.readFileSync("./sde/bsd/typeIDs.yaml", "utf8")
+  // const types = YAML.parse(file)
+  // const typesParsed = [] // TODO
+  // for (let type of types) {
+  //   typesParsed.push({
+  //   })
+  // }
+}
 
-    InvVolumes.init({
-      typeId: {
-        type: DataTypes.INTEGER.UNSIGNED,
-        primaryKey: true
-      },
-      volume: {
-        type: DataTypes.DOUBLE,
-        allowNull: true
-      }
-    }, {
-      sequelize: db,
-      modelName: this.tableName
-    })
-  },
-
-  async import(db) {
-    // TODO
-    // const file = fs.readFileSync("./sde/bsd/typeIDs.yaml", "utf8")
-    // const types = YAML.parse(file)
-
-    // const typesParsed = [] // TODO
-    // for (let type of types) {
-    //   typesParsed.push({
-
-    //   })
-    // }
-  },
-
-  get(id) {
-    return InvVolumes.findByPk(id)
-  }
+export function get(id) {
+  return InvVolumes.findByPk(id)
 }

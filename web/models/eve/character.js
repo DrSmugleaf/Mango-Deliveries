@@ -2,124 +2,116 @@
 // Copyright (c) 2017 DrSmugleaf
 //
 
-"use strict"
+import Sequelize from "sequelize"
 
-const { Model, DataTypes } = require("sequelize")
-const winston = require("winston")
+class EveCharacters extends Sequelize.Model {}
+class EveBannedCharacters extends Sequelize.Model {}
 
-class EveCharacters extends Model {}
-class EveBannedCharacters extends Model {}
+export function init(db) {
+  console.log("Initializing characters")
 
-module.exports = {
-  db: null,
+  EveCharacters.init({
+    id: {
+      type: Sequelize.BIGINT.UNSIGNED,
+      primaryKey: true
+    },
+    token: {
+      type: Sequelize.TEXT("tiny"),
+      allowNull: false
+    },
+    characterName: {
+      type: Sequelize.TEXT("tiny"),
+      allowNull: false
+    },
+    characterPortrait: {
+      type: Sequelize.TEXT("tiny"),
+      allowNull: false
+    },
+    characterBirthday: {
+      type: Sequelize.DATE,
+      allowNull: false
+    },
+    corporationId: {
+      type: Sequelize.BIGINT.UNSIGNED,
+      allowNull: false
+    },
+    corporationName: {
+      type: Sequelize.TEXT("tiny"),
+      allowNull: false
+    },
+    corporationPortrait: {
+      type: Sequelize.TEXT("tiny"),
+      allowNull: false
+    },
+    allianceId: {
+      type: Sequelize.BIGINT.UNSIGNED
+    },
+    allianceName: {
+      type: Sequelize.TEXT("tiny")
+    },
+    alliancePortrait: {
+      type: Sequelize.TEXT("tiny")
+    },
+    freighter: {
+      type: Sequelize.BOOLEAN,
+      allowNull: false,
+      defaultValue: false
+    },
+    director: {
+      type: Sequelize.BOOLEAN,
+      allowNull: false,
+      defaultValue: false
+    },
+  }, {
+    sequelize: db
+  })
 
-  async init(db) {
-    winston.info("Initializing characters")
-    this.db = db
+  EveBannedCharacters.init({
+    name: {
+      type: Sequelize.STRING(32),
+      primaryKey: true
+    }
+  }, {
+    sequelize: db
+  })
+}
 
-    EveCharacters.init({
-      id: {
-        type: DataTypes.BIGINT.UNSIGNED,
-        primaryKey: true
-      },
-      token: {
-        type: DataTypes.TEXT("tiny"),
-        allowNull: false
-      },
-      characterName: {
-        type: DataTypes.TEXT("tiny"),
-        allowNull: false
-      },
-      characterPortrait: {
-        type: DataTypes.TEXT("tiny"),
-        allowNull: false
-      },
-      characterBirthday: {
-        type: DataTypes.DATE,
-        allowNull: false
-      },
-      corporationId: {
-        type: DataTypes.BIGINT.UNSIGNED,
-        allowNull: false
-      },
-      corporationName: {
-        type: DataTypes.TEXT("tiny"),
-        allowNull: false
-      },
-      corporationPortrait: {
-        type: DataTypes.TEXT("tiny"),
-        allowNull: false
-      },
-      allianceId: {
-        type: DataTypes.BIGINT.UNSIGNED
-      },
-      allianceName: {
-        type: DataTypes.TEXT("tiny")
-      },
-      alliancePortrait: {
-        type: DataTypes.TEXT("tiny")
-      },
-      freighter: {
-        type: DataTypes.BOOLEAN,
-        allowNull: false,
-        defaultValue: false
-      },
-      director: {
-        type: DataTypes.BOOLEAN,
-        allowNull: false,
-        defaultValue: false
-      },
-    }, {
-      sequelize: this.db
-    })
+export function ban(name) {
+  EveBannedCharacters.build({ name: name }).save()
+}
 
-    EveBannedCharacters.init({
-      name: {
-        type: DataTypes.STRING(32),
-        primaryKey: true
-      }
-    }, {
-      sequelize: this.db
-    })
-  },
+export function remove(id) {
+  EveCharacters.build({ id: id }).destroy()
+}
 
-  ban(name) {
-    EveBannedCharacters.build({name: name}).save()
-  },
+export function get(id) {
+  return EveCharacters.findByPk(id)
+}
 
-  delete(id) {
-    EveCharacters.build({id: id}).destroy()
-  },
+export function getBanned() {
+  return EveBannedCharacters.findAll()
+}
 
-  get(id) {
-    return EveCharacters.findByPk(id)
-  },
+export function getByName(name) {
+  return EveCharacters.findOne({ where: { name: name } })
+}
 
-  getBanned() {
-    return EveBannedCharacters.findAll()
-  },
+export function getByToken(token) {
+  return EveCharacters.findAll({ where: { token: token } })
+}
 
-  getByName(name) {
-    return EveCharacters.findOne({where: {name: name}})
-  },
+export function getFreighters() {
+  return EveCharacters.findAll({ where: { freighter: true } })
+}
 
-  getByToken(token) {
-    return EveCharacters.findAll({where: {token: token}})
-  },
+export async function isBanned(name) {
+  return EveBannedCharacters.findByPk(name).then(c => c !== null)
+}
 
-  getFreighters() {
-    return EveCharacters.findAll({where: {freighter: true}})
-  },
+export async function set(data) {
+  await EveCharacters.upsert(data)
+}
 
-  async isBanned(name) { // TODO use id
-    return EveBannedCharacters.findByPk(name).then(c => c !== null)
-  },
-
-  async set(data) {
-    await EveCharacters.upsert(data)
-  },
-
-  unban(name) { // TODO use id
-    return EveBannedCharacters.build({name: name}).destroy()
-  }
+export function unban(name) {
+  return EveBannedCharacters.build({ name: name }).destroy()
 }

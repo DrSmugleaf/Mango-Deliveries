@@ -2,199 +2,191 @@
 // Copyright (c) 2017 DrSmugleaf
 //
 
-"use strict"
+import Sequelize from "sequelize"
 
-const { Model, DataTypes, Sequelize } = require("sequelize")
-const winston = require("winston")
+class EveContracts extends Sequelize.Model {}
 
-class EveContracts extends Model {}
+export function init(db) {
+  console.log("Initializing contracts")
 
-module.exports = {
-  db: null,
+  EveContracts.init({
+    id: {
+      type: Sequelize.BIGINT.UNSIGNED,
+      autoIncrement: true,
+      primaryKey: true
+    },
+    link: {
+      type: Sequelize.TEXT("tiny"),
+      allowNull: false
+    },
+    destination: {
+      type: Sequelize.TEXT("tiny"),
+      allowNull: false
+    },
+    value: {
+      type: Sequelize.BIGINT.UNSIGNED,
+      allowNull: false
+    },
+    valueFormatted: {
+      type: Sequelize.TEXT("tiny"),
+      allowNull: false
+    },
+    valueShort: {
+      type: Sequelize.TEXT("tinby"),
+      allowNull: false
+    },
+    quote: {
+      type: Sequelize.BIGINT.UNSIGNED,
+      allowNull: false
+    },
+    quoteFormatted: {
+      type: Sequelize.TEXT("tiny"),
+      allowNull: false
+    },
+    quoteShort: {
+      type: Sequelize.TEXT("tiny"),
+      allowNull: false
+    },
+    volume: {
+      type: Sequelize.BIGINT.UNSIGNED,
+      allowNull: false
+    },
+    volumeFormatted: {
+      type: Sequelize.TEXT("tiny"),
+      allowNull: false
+    },
+    valueVolumeRatio: {
+      type: Sequelize.INTEGER.UNSIGNED,
+      allowNull: false
+    },
+    valueVolumeRatioFormatted: {
+      type: Sequelize.TEXT("tiny"),
+      allowNull: false
+    },
+    multiplier: {
+      type: Sequelize.TINYINT.UNSIGNED,
+      allowNull: false
+    },
+    submitterId: {
+      type: Sequelize.INTEGER.UNSIGNED,
+      allowNull: false
+    },
+    submitterName: {
+      type: Sequelize.TEXT("tiny"),
+      allowNull: false
+    },
+    submitted: {
+      type: Sequelize.BIGINT,
+      allowNull: false
+    },
+    submittedFormatted: {
+      type: Sequelize.TEXT("tiny"),
+      allowNull: false
+    },
+    status: {
+      type: Sequelize.TEXT("tiny"),
+      allowNull: false
+    },
+    freighterId: {
+      type: Sequelize.INTEGER.UNSIGNED,
+      allowNull: false
+    },
+    freighterName: {
+      type: Sequelize.TEXT("tiny"),
+      allowNull: false
+    },
+    taxed: {
+      type: Sequelize.BOOLEAN,
+      allowNull: false,
+      defaultValue: false
+    },
+  }, {
+    sequelize: db
+  })
+}
 
-  init(db) {
-    winston.info("Initializing contracts")
-    this.db = db
+export function remove(id) {
+  return EveContracts.build({ id: id }).destroy()
+}
 
-    EveContracts.init({
-      id: {
-        type: DataTypes.BIGINT.UNSIGNED,
-        autoIncrement: true,
-        primaryKey: true
-      },
-      link: {
-        type: DataTypes.TEXT("tiny"),
-        allowNull: false
-      },
-      destination: {
-        type: DataTypes.TEXT("tiny"),
-        allowNull: false
-      },
-      value: {
-        type: DataTypes.BIGINT.UNSIGNED,
-        allowNull: false
-      },
-      valueFormatted: {
-        type: DataTypes.TEXT("tiny"),
-        allowNull: false
-      },
-      valueShort: {
-        type: DataTypes.TEXT("tinby"),
-        allowNull: false
-      },
-      quote: {
-        type: DataTypes.BIGINT.UNSIGNED,
-        allowNull: false
-      },
-      quoteFormatted: {
-        type: DataTypes.TEXT("tiny"),
-        allowNull: false
-      },
-      quoteShort: {
-        type: DataTypes.TEXT("tiny"),
-        allowNull: false
-      },
-      volume: {
-        type: DataTypes.BIGINT.UNSIGNED,
-        allowNull: false
-      },
-      volumeFormatted: {
-        type: DataTypes.TEXT("tiny"),
-        allowNull: false
-      },
-      valueVolumeRatio: {
-        type: DataTypes.INTEGER.UNSIGNED,
-        allowNull: false
-      },
-      valueVolumeRatioFormatted: {
-        type: DataTypes.TEXT("tiny"),
-        allowNull: false
-      },
-      multiplier: {
-        type: DataTypes.TINYINT.UNSIGNED,
-        allowNull: false
-      },
-      submitterId: {
-        type: DataTypes.INTEGER.UNSIGNED,
-        allowNull: false
-      },
-      submitterName: {
-        type: DataTypes.TEXT("tiny"),
-        allowNull: false
-      },
-      submitted: {
-        type: DataTypes.BIGINT,
-        allowNull: false
-      },
-      submittedFormatted: {
-        type: DataTypes.TEXT("tiny"),
-        allowNull: false
-      },
-      status: {
-        type: DataTypes.TEXT("tiny"),
-        allowNull: false
-      },
-      freighterId: {
-        type: DataTypes.INTEGER.UNSIGNED,
-        allowNull: false
-      },
-      freighterName: {
-        type: DataTypes.TEXT("tiny"),
-        allowNull: false
-      },
-      taxed: {
-        type: DataTypes.BOOLEAN,
-        allowNull: false,
-        defaultValue: false
-      },
-    }, {
-      sequelize: this.db
-    })
-  },
+export function get(id) {
+  return EveContracts.findByPk(id)
+}
 
-  delete(id) {
-    return EveContracts.build({id: id}).destroy()
-  },
-
-  get(id) {
-    return EveContracts.findByPk(id)
-  },
-
-  getAllPending(characterID) {
-    if (characterID) {
-      return EveContracts.findAll({
-        where: Sequelize.and(
-          Sequelize.or(
-            {status: "pending"},
-            {status: "flagged"}
-          ),
-          {where: {submitterId: characterID}}
-        ),
-        order: [["status", "DESC"], "submitted"]
-      })
-    }
-
-    return EveContracts.findAll({
-      where: Sequelize.or(
-        {status: "pending"},
-        {status: "flagged"}
-      ),
-      order: [["status", "DESC"], "submitted"]
-    })
-  },
-
-  getAllOngoing(characterID) {
-    if (characterID) {
-      return EveContracts.findAll({
-        where: Sequelize.and(
-          {status: "ongoing"},
-          {submitterId: characterID}
-        )
-      })
-    }
-
-    return EveContracts.findAll({where: {status: "ongoing"}})
-  },
-
-  getAllFinalized(characterID) {
-    if (characterID) {
-      return EveContracts.findAll({
-        where: Sequelize.and(
-          {status: "completed"},
-          {submitterId: characterID}
-        )
-      })
-    }
-
-    return EveContracts.findAll({where:  {status: "completed"}})
-  },
-
-  getAllUntaxed(characterID) {
-    if (characterID) {
-      return EveContracts.findAll({
-        where: Sequelize.and(
-          Sequelize.or(
-            {status: "completed"},
-            {status: "ongoing"}
-          ),
-          {taxed: 0},
-          {submitterId: characterID}
-        )
-      })
-    }
-
+export function getAllPending(characterID) {
+  if (characterID) {
     return EveContracts.findAll({
       where: Sequelize.and(
         Sequelize.or(
-          {status: "completed"},
-          {status: "ongoing"}
+          { status: "pending" },
+          { status: "flagged" }
         ),
-        {taxed: 0},
+        { where: { submitterId: characterID } }
+      ),
+      order: [["status", "DESC"], "submitted"]
+    })
+  }
+
+  return EveContracts.findAll({
+    where: Sequelize.or(
+      { status: "pending" },
+      { status: "flagged" }
+    ),
+    order: [["status", "DESC"], "submitted"]
+  })
+}
+
+export function getAllOngoing(characterID) {
+  if (characterID) {
+    return EveContracts.findAll({
+      where: Sequelize.and(
+        { status: "ongoing" },
+        { submitterId: characterID }
       )
     })
-  },
-
-  set(data) {
-    return EveContracts.upsert(EveContracts.build(data))
   }
+
+  return EveContracts.findAll({ where: { status: "ongoing" } })
+}
+
+export function getAllFinalized(characterID) {
+  if (characterID) {
+    return EveContracts.findAll({
+      where: Sequelize.and(
+        { status: "completed" },
+        { submitterId: characterID }
+      )
+    })
+  }
+
+  return EveContracts.findAll({ where: { status: "completed" } })
+}
+
+export function getAllUntaxed(characterID) {
+  if (characterID) {
+    return EveContracts.findAll({
+      where: Sequelize.and(
+        Sequelize.or(
+          { status: "completed" },
+          { status: "ongoing" }
+        ),
+        { taxed: 0 },
+        { submitterId: characterID }
+      )
+    })
+  }
+
+  return EveContracts.findAll({
+    where: Sequelize.and(
+      Sequelize.or(
+        { status: "completed" },
+        { status: "ongoing" }
+      ),
+      { taxed: 0 }
+    )
+  })
+}
+
+export function set(data) {
+  return EveContracts.upsert(EveContracts.build(data))
 }

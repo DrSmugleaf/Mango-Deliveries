@@ -4,10 +4,11 @@
  * Module dependencies.
  */
 
-var app = require("../web/app");
-var debug = require("debug")("express-test:server");
-var fs = require("fs");
-var https = require("https");
+import app from "../web/app.js";
+import debugLib from "debug"
+import { createServer } from "http";
+
+const debug = debugLib("express-test:server");
 
 /**
  * Get port from environment and store in Express.
@@ -17,18 +18,10 @@ var port = normalizePort(process.env.PORT || "3000");
 app.set("port", port);
 
 /**
- * Parse SSL credentials.
- */
-const credentials = {
-  cert: fs.readFileSync(process.env.SSL_CERT, "utf8"),
-  key: fs.readFileSync(process.env.SSL_KEY, "utf8")
-};
-
-/**
  * Create HTTP server.
  */
 
-var server = https.createServer(credentials, app);
+var server = createServer(app);
 
 /**
  * Listen on provided port, on all network interfaces.

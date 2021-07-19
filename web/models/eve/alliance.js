@@ -2,43 +2,35 @@
 // Copyright (c) 2017 DrSmugleaf
 //
 
-"use strict"
+import Sequelize from "sequelize"
 
-const { Model, DataTypes } = require("sequelize")
-const winston = require("winston")
+class AllowedAlliances extends Sequelize.Model {}
 
-class AllowedAlliances extends Model {}
+export function init(db) {
+  console.log("Initializing alliances")
 
-module.exports = {
-  db: null,
+  AllowedAlliances.init({
+    name: {
+      type: Sequelize.STRING(32),
+      primaryKey: true
+    }
+  }, {
+    sequelize: db
+  })
+}
 
-  init(db) {
-    winston.info("Initializing alliances")
-    this.db = db
+export function allow(name) {
+  AllowedAlliances.build({ name: name }).save()
+}
 
-    AllowedAlliances.init({
-      name: {
-        type: DataTypes.STRING(32),
-        primaryKey: true
-      }
-    }, {
-      sequelize: this.db
-    })
-  },
+export function disallow(name) {
+  AllowedAlliances.build({ name: name }).destroy()
+}
 
-  allow(name) {
-    AllowedAlliances.build({name: name}).save()
-  },
+export function getAllowed() {
+  return AllowedAlliances.findAll()
+}
 
-  disallow(name) {
-    AllowedAlliances.build({name: name}).destroy()
-  },
-
-  getAllowed() {
-    return AllowedAlliances.findAll()
-  },
-
-  async isAllowed(name) {
-    return AllowedAlliances.findByPk(name).then(c => c !== null)
-  }
+export async function isAllowed(name) {
+  return AllowedAlliances.findByPk(name).then(c => c !== null)
 }

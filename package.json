@@ -1,6 +1,7 @@
 {
   "name": "mango-deliveries",
   "version": "1.0.0",
+  "type": "module",
   "description": "EVE Online freighting service",
   "engines": {
     "node": "14.17.3"
@@ -20,7 +21,6 @@
   "license": "Apache-2.0",
   "dependencies": {
     "async": "3.2.0",
-    "checkenv": "1.2.2",
     "common-tags": "1.8.0",
     "connect-session-sequelize": "7.1.1",
     "dotenv": "10.0.0",
@@ -33,13 +33,11 @@
     "pug": "3.0.2",
     "request": "2.88.2",
     "request-promise": "4.2.6",
-    "require-all": "3.0.0",
     "sequelize": "6.6.5",
     "underscore": "1.13.1",
     "valid-url": "1.0.9",
     "winston": "3.3.3",
-    "yaml": "1.10.2",
-    "yargs": "16.2.0"
+    "yaml": "1.10.2"
   },
   "devDependencies": {
     "babel-eslint": "latest",
