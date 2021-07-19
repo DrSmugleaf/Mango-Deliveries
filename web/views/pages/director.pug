@@ -1,19 +1,15 @@
-//
-// Copyright (c) 2017 DrSmugleaf
-//
-
 doctype html
 html(lang="en")
   head
     include ../partials/header
   body
     include ../partials/navigation
-    
+
     div.jumbotron
       div.container
         h1 Mango Deliveries
         p Director Panel
-    
+
     div.container
       div#submit-alert.alert(role="alert")
         p(style="white-space: pre-wrap;")
@@ -34,7 +30,7 @@ html(lang="en")
           a(onclick="showSettingsPanel(this)") Settings
         li
           a(onclick="showDestinationsPanel(this)") Destinations
-      
+
       div#userPanel(style="display: none;")
         form(method="post" action="/director/submit")
           div.panel.panel-default
@@ -61,7 +57,7 @@ html(lang="en")
                     img(src=user.character_portrait style="width: 25px; height: 25px;")
                   td=user.character_name
               - })
-      
+
       div#freighterPanel(style="display: none;")
         form(method="post" action="/director/submit")
           div.panel.panel-default
@@ -95,7 +91,7 @@ html(lang="en")
                   td=freighter.corporation_name
                   td=freighter.alliance_name
               - })
-      
+
       div#alliancePanel(style="display: none;")
         form(method="post" action="/director/submit")
           div.panel.panel-default
@@ -119,7 +115,7 @@ html(lang="en")
                 tr
                   td=alliance.name
               - })
-      
+
       div#corporationPanel(style="display: none;")
         form(method="post" action="/director/submit")
           div.panel.panel-default
@@ -144,7 +140,7 @@ html(lang="en")
                 tr
                   td=corporation.name
               - })
-      
+
       div#itemTypePanel(style="display: none;")
         form(method="post" action="/director/submit")
           div.panel.panel-default
@@ -182,7 +178,7 @@ html(lang="en")
                   td=type.volume
                   td=type.capacity
               - })
-      
+
       div#marketGroupPanel(style="display: none;")
         form(method="post" action="/director/submit")
           div.panel.panel-default
@@ -211,7 +207,7 @@ html(lang="en")
                   td=group.marketGroupName
                   td=group.description
               - })
-      
+
       div#settingsPanel(style="display: none;")
         form(method="post" action="/director/submit" object="settings")
           div.panel.panel-default
@@ -227,7 +223,7 @@ html(lang="en")
               div.form-group
                 div.row.text-center
                   button.btn.btn-success(type="submit" name="apply") Apply
-      
+
       div#destinationsPanel(style="display: none;")
         form(method="post" action="/director/submit" object="destination")
           div.panel.panel-default
@@ -247,7 +243,7 @@ html(lang="en")
                 div.row.text-center
                   button.btn.btn-success(type="submit" name="add" style="margin-right: 5px;" value="destination") Add Destination
                   button.btn.btn-danger(type="submit" name="remove") Remove Destination
-    
+
     include ../partials/footer
     script.
       function showUserPanel(e) {
@@ -256,49 +252,49 @@ html(lang="en")
         $("form").parent("div").hide()
         $("#userPanel").show()
       }
-      
+
       function showFreighterPanel(e) {
         $("ul.nav.nav-tabs.nav-justified li").removeClass("active")
         $(e).parent("li").addClass("active")
         $("form").parent("div").hide()
         $("#freighterPanel").show()
       }
-      
+
       function showAlliancePanel(e) {
         $("ul.nav.nav-tabs.nav-justified li").removeClass("active")
         $(e).parent("li").addClass("active")
         $("form").parent("div").hide()
         $("#alliancePanel").show()
       }
-      
+
       function showCorporationPanel(e) {
         $("ul.nav.nav-tabs.nav-justified li").removeClass("active")
         $(e).parent("li").addClass("active")
         $("form").parent("div").hide()
         $("#corporationPanel").show()
       }
-      
+
       function showItemTypePanel(e) {
         $("ul.nav.nav-tabs.nav-justified li").removeClass("active")
         $(e).parent("li").addClass("active")
         $("form").parent("div").hide()
         $("#itemTypePanel").show()
       }
-      
+
       function showMarketGroupPanel(e) {
         $("ul.nav.nav-tabs.nav-justified li").removeClass("active")
         $(e).parent("li").addClass("active")
         $("form").parent("div").hide()
         $("#marketGroupPanel").show()
       }
-      
+
       function showSettingsPanel(e) {
         $("ul.nav.nav-tabs.nav-justified li").removeClass("active")
         $(e).parent("li").addClass("active")
         $("form").parent("div").hide()
         $("#settingsPanel").show()
       }
-      
+
       function showDestinationsPanel(e) {
         $("ul.nav.nav-tabs.nav-justified li").removeClass("active")
         $(e).parent("li").addClass("active")
@@ -310,12 +306,12 @@ html(lang="en")
       $("button[type='submit']").on("click", function() {
         $(this).closest("form").data("action", this.name)
       })
-    
+
       $("form").submit(function(e) {
         var data = $(this).serialize()
         data += "&action=" + $(this).data("action") || $("input[type='submit']").get(0).name
         data += "&object=" + $(this).attr("object")
-        
+
         $.ajax({
           type: $(this).attr("method"),
           url: $(this).attr("action"),
@@ -333,7 +329,7 @@ html(lang="en")
         }).done()
         return false
       })
-    
+
     script.
       $(document).ready(function() {
         $("[data-toggle='tooltip']").tooltip()

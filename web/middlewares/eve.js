@@ -1,7 +1,3 @@
-//
-// Copyright (c) 2017 DrSmugleaf
-//
-
 import { getByToken } from "../models/eve/character.js"
 
 export async function eveAuth(req, res, next) {

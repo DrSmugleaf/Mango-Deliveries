@@ -1,7 +1,3 @@
-//
-// Copyright (c) 2017 DrSmugleaf
-//
-
 import { whilst } from "async"
 import fs from "fs"
 import YAML from "yaml"

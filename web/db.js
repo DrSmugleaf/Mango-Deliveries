@@ -1,7 +1,3 @@
-//
-// Copyright (c) 2017 DrSmugleaf
-//
-
 import { forEach } from "underscore"
 import path from "path"
 import { Sequelize } from "sequelize"

@@ -1,7 +1,3 @@
-//
-// Copyright (c) 2017 DrSmugleaf
-//
-
 import { forEach } from "underscore"
 import { isAllowed as isAllianceAllowed, getAllowed as getAllowedAlliances } from "../models/eve/alliance.js"
 import { set as setCharacter, get as getCharacter, isBanned, getByToken, getBanned, getFreighters } from "../models/eve/character.js"

@@ -1,7 +1,3 @@
-//
-// Copyright (c) 2017 DrSmugleaf
-//
-
 import { Router } from "express"
 import { router as eveRouter, init as eveInit } from "./eve.js"
 

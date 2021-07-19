@@ -1,7 +1,3 @@
-//
-// Copyright (c) 2017 DrSmugleaf
-//
-
 import { forEach, isEmpty, pluck, intersection } from "underscore"
 import { isAllowed, allow, disallow } from "../models/eve/alliance.js"
 import { filter, eachOf, forEach as _forEach } from "async"

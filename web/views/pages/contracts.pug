@@ -1,7 +1,3 @@
-//
-// Copyright (c) 2017 DrSmugleaf
-//
-
 doctype html
 html(lang="en")
   head
@@ -9,7 +5,7 @@ html(lang="en")
     link(rel="stylesheet" type="text/css" href="/stylesheets/eve/contracts.css")
   body
     include ../partials/navigation
-    
+
     div.jumbotron
       div.container
         h1 Mango Deliveries
@@ -21,21 +17,21 @@ html(lang="en")
               p There are #{pendingContracts.length} pending contracts left
             else
               p There are no pending contracts left
-            
+
             if(ongoingContracts.length === 1)
               p There is 1 currently ongoing contract
             else if(ongoingContracts.length > 1)
               p There are #{ongoingContracts.length} currently ongoing contracts
             else
               p There are no currently ongoing contracts
-            
+
             if(finalizedContracts.length === 1)
               p There is 1 finalized contract
             else if(finalizedContracts.length > 1)
               p There are #{finalizedContracts.length} finalized contracts
             else
               p There are no finalized contracts
-        
+
         if(freighter)
           div.col-md-6
             div.col-md-6.pull-right
@@ -48,7 +44,7 @@ html(lang="en")
               div.form-group
                 div(style="text-align: center;")
                   button.btn.btn-primary(type="submit" onclick="submit()") Submit
-    
+
     if(pendingContracts || ongoingContracts || finalizedContracts)
       div.container
         div#submit-alert.alert(role="alert")
@@ -99,7 +95,7 @@ html(lang="en")
                       else
                         input(type="checkbox" name="flag" value=contract.value contract=contract.id)
               - })
-              
+
         div.table-responsive#ongoingContracts(style="display: none;")
           table.table.table-striped
             thead
@@ -136,7 +132,7 @@ html(lang="en")
                     td
                       input(type="checkbox" name="complete" value=contract.value contract=contract.id)
               - })
-        
+
         div.table-responsive#finalizedContracts(style="display: none;")
           table.table.table-striped
             thead
@@ -192,29 +188,29 @@ html(lang="en")
         }
         $("#tax").val(tax)
       })
-    
+
     script.
       function submit() {
         var accept = []
         $("input[name=accept]:checked").each(function() {
           accept.push($(this).attr("contract"))
         })
-        
+
         var flag = []
         $("input[name=flag]:checked").each(function() {
           flag.push($(this).attr("contract"))
         })
-        
+
         var complete = []
         $("input[name=complete]:checked").each(function() {
           complete.push($(this).attr("contract"))
         })
-        
+
         var tax = []
         $("input[name=tax]:checked").each(function() {
           tax.push($(this).attr("contract"))
         })
-        
+
         $.ajax({
           type: "POST",
           url: "/contracts/submit",
@@ -248,7 +244,7 @@ html(lang="en")
         $("div.table-responsive").hide()
         $("#pendingContracts").show()
       }
-      
+
       function showOngoing(e) {
         if($(e).parent(".disabled").length) return
         $("ul.nav.nav-tabs.nav-justified li").removeClass("active")
@@ -256,7 +252,7 @@ html(lang="en")
         $("div.table-responsive").hide()
         $("#ongoingContracts").show()
       }
-      
+
       function showFinalized(e) {
         if($(e).parent(".disabled").length) return
         $("ul.nav.nav-tabs.nav-justified li").removeClass("active")

@@ -1,7 +1,3 @@
-//
-// Copyright (c) 2017 DrSmugleaf
-//
-
 import Sequelize from "sequelize"
 
 class AllowedCorporations extends Sequelize.Model {}

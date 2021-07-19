@@ -1,7 +1,3 @@
-//
-// Copyright (c) 2017 DrSmugleaf
-//
-
 import Sequelize from "sequelize"
 import fs from "fs"
 import YAML from "yaml"
