@@ -1,4 +1,3 @@
-import { forEach } from "underscore"
 import path from "path"
 import { Sequelize } from "sequelize"
 import { readdirSync } from "fs";
@@ -28,14 +27,14 @@ export function init() {
 
     // const doImport = true || argv._.includes("import") // TODO
 
-    Promise.all(models).then(models => {
-      forEach(models, async model => {
-        model.init(db)
+    Promise.all(models).then(async models => {
+      for (let model of models) {
+        await model.init(db)
 
         // if (doImport && model.import !== undefined) { // TODO
         //   // await model.import(sequelize)
         // }
-      })
+      }
     })
   }).catch(e => {
     console.error(e)

@@ -1,4 +1,3 @@
-import { forEach, isEmpty, pluck, intersection } from "underscore"
 import { isAllowed, allow, disallow } from "../models/eve/alliance.js"
 import { filter, eachOf, forEach as _forEach } from "async"
 import { isBanned, getByName, ban, unban, set } from "../models/eve/character.js"
@@ -31,6 +30,7 @@ export function nShortener(num, digits = 2) {
   }
   return num.toFixed(digits).replace(rx, "$1")
 }
+
 export function validateAppraisal(query) {
   return new Promise((resolve) => {
     if (!isUri(query.link))
@@ -39,15 +39,21 @@ export function validateAppraisal(query) {
     const multiplier = query.multiplier ? parseInt(query.multiplier, 10) : 1
     const destination = query.destination
 
-    if (!link)
+    if (!link) {
       return resolve({ invalid: { "#link": "Invalid link." } })
+    }
+
     if (!["evepraisal.com", "skyblade.de"].includes(link.hostname)) {
       return resolve({ invalid: { "#link": "Invalid link." } })
     }
-    if (!multiplier)
+
+    if (!multiplier) {
       return resolve({ invalid: { "#multiplier": "Invalid multiplier." } })
-    if (!destination)
+    }
+
+    if (!destination) {
       return resolve({ invalid: { "#destination": "Invalid destination. Click one of the station images above." } })
+    }
 
     var response = { invalid: {} }
     var appraisal
@@ -82,33 +88,42 @@ export function validateAppraisal(query) {
 
       if (bannedItemTypes && bannedItemTypes.length > 0) {
         string = "Your appraisal contains banned items:\n"
-        forEach(bannedItemTypes, (item) => {
+
+        for (let item in bannedItemTypes) {
           string = string.concat(`${item.typeName}\n`)
-        })
-        response.invalid["#link"] = response.invalid["#link"] ?
-          response.invalid["#link"].concat(string) : string
+        }
+
+        response.invalid["#link"] = response.invalid["#link"]
+          ? response.invalid["#link"].concat(string)
+          : string
       }
       if (bannedMarketGroups && bannedMarketGroups.length > 0) {
         string = "Your appraisal contains items from banned market groups:\n"
-        forEach(bannedMarketGroups, (item) => {
+
+        for (let item in bannedMarketGroups) {
           string = string.concat(`${item.typeName}\n`)
-        })
-        response.invalid["#link"] = response.invalid["#link"] ?
-          response.invalid["#link"].concat(string) : string
+        }
+
+        response.invalid["#link"] = response.invalid["#link"]
+          ? response.invalid["#link"].concat(string)
+          : string
       }
 
-      if (!isEmpty(response.invalid))
-        return resolve(response)
-      return resolve(appraisal)
+      if (Object.keys(response.invalid).length === 0) {
+        return resolve(appraisal)
+      }
+
+      return resolve(response)
     }).catch(() => {
       resolve({ invalid: { "#link": "Invalid appraisal." } })
     })
   })
 }
+
 export function filterBannedItemTypes(appraisal) {
   return new Promise(async (resolve) => {
     const bannedTypes = await _getBanned()
-    const bannedTypeIDs = pluck(bannedTypes, "typeID")
+    const bannedTypeIDs = bannedTypes.map(t => t.typeID)
 
     filter(appraisal.items, async (item) => {
       item = await ___get(item.typeID)
@@ -122,17 +137,21 @@ export function filterBannedItemTypes(appraisal) {
     })
   })
 }
+
 export function filterBannedMarketGroups(appraisal) {
   return new Promise(async (resolve) => {
     const bannedMarketGroups = await getBanned()
-    const bannedMarketGroupIDs = pluck(bannedMarketGroups, "marketGroupID")
+    const bannedMarketGroupIDs = bannedMarketGroups.map(g => g.marketGroupID)
 
     filter(appraisal.items, async (item) => {
       item = await ___get(item.typeID)
       item = item[0]
+
       const groups = await getAllParentsByID(item.marketGroupID)
-      if (intersection(bannedMarketGroupIDs, groups).length > 0)
+
+      if (bannedMarketGroupIDs.some(id => groups.includes(id))) {
         return item
+      }
     }, function (e, results) {
       if (e)
         console.error(e)
@@ -140,6 +159,7 @@ export function filterBannedMarketGroups(appraisal) {
     })
   })
 }
+
 export function fixShipVolumes(appraisal) {
   appraisal.totals.volume = 0
 
@@ -156,6 +176,7 @@ export function fixShipVolumes(appraisal) {
     })
   })
 }
+
 export const contracts = {
   accept(req) {
     return new Promise((resolve, reject) => {
@@ -231,6 +252,7 @@ export const contracts = {
     })
   }
 }
+
 export const director = {
   async user(name, action) {
     const banned = await isBanned(name)
@@ -353,9 +375,11 @@ export const director = {
 
     if (groups.length > 1) {
       var alert = "Multiple market groups exist with that name, please input an ID:\n"
-      forEach(groups, (group) => {
+
+      for (let group of groups) {
         alert = alert.concat(`${group.marketGroupID} ${group.marketGroupName}: ${group.description}\n`)
-      })
+      }
+
       return { error: true, alert: alert }
     }
 
@@ -391,7 +415,7 @@ export const director = {
     case "add":
       if (exists)
         return { error: true, alert: `Destination ${body.name} is already in the list.` }
-      add({ "name": body.name, "image": body.image }).catch((e) => _error(e))
+      add({ "name": body.name, "image": body.image }).catch((e) => console.error(e))
       return { alert: `Added ${body.name} to the list of destinations with image ${body.image}.` }
     case "remove":
       if (!exists)

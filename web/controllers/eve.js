@@ -1,4 +1,3 @@
-import { forEach } from "underscore"
 import { isAllowed as isAllianceAllowed, getAllowed as getAllowedAlliances } from "../models/eve/alliance.js"
 import { set as setCharacter, get as getCharacter, isBanned, getByToken, getBanned, getFreighters } from "../models/eve/character.js"
 import { set as setContract, getAllPending, getAllOngoing, getAllFinalized } from "../models/eve/contract.js"
@@ -81,9 +80,11 @@ export function init() {
         request.get(`https://esi.evetech.net/latest/characters/${body.CharacterID}/portrait/`)
       ])
     }).then((bodies) => {
-      forEach(bodies, (body, index) => {
+      for (let index in bodies) {
+        const body = bodies[index]
         bodies[index] = JSON.parse(body)
-      })
+      }
+
       eveCharacter.characterName = bodies[0].name
       eveCharacter.characterPortrait = bodies[1].px64x64.replace(/^http:\/\//i, "https://")
       eveCharacter.characterBirthday = moment(bodies[0].birthday).format("YYYY-MM-DD HH:mm:ss")
@@ -104,9 +105,10 @@ export function init() {
         ])
       }
     }).then(async (bodies) => {
-      forEach(bodies, (body, index) => {
+      for (let index in bodies) {
+        const body = bodies[index]
         bodies[index] = JSON.parse(body)
-      })
+      }
 
       eveCharacter.corporationName = bodies[0].name
       eveCharacter.corporationPortrait = bodies[1].px64x64.replace(/^http:\/\//i, "https://")
