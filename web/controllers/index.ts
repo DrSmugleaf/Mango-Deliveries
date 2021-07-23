@@ -1,9 +1,9 @@
 import { Router } from "express"
 import { router as eveRouter, init as eveInit } from "./eve.js"
 
-export var router
+export let router: Router
 
-export function init() {
+export function init(): void {
   eveInit()
 
   router = Router()

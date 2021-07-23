@@ -308,7 +308,7 @@ html(lang="en")
       })
 
       $("form").submit(function(e) {
-        var data = $(this).serialize()
+        let data = $(this).serialize()
         data += "&action=" + $(this).data("action") || $("input[type='submit']").get(0).name
         data += "&object=" + $(this).attr("object")
 

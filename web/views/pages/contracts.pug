@@ -179,7 +179,7 @@ html(lang="en")
 
     include ../partials/footer
     script.
-      var tax = 0
+      let tax = 0
       $("tr input[type=checkbox]").change(function() {
         if($(this).prop("checked") == true) {
           tax += parseInt($(this).prop("value"), 10) * 0.03
@@ -191,22 +191,22 @@ html(lang="en")
 
     script.
       function submit() {
-        var accept = []
+        const accept = []
         $("input[name=accept]:checked").each(function() {
           accept.push($(this).attr("contract"))
         })
 
-        var flag = []
+        const flag = []
         $("input[name=flag]:checked").each(function() {
           flag.push($(this).attr("contract"))
         })
 
-        var complete = []
+        const complete = []
         $("input[name=complete]:checked").each(function() {
           complete.push($(this).attr("contract"))
         })
 
-        var tax = []
+        const tax = []
         $("input[name=tax]:checked").each(function() {
           tax.push($(this).attr("contract"))
         })

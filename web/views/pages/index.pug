@@ -16,7 +16,7 @@ html(lang="en")
       form(method="post" action="/submit")
         div#image_container
           if(destinations)
-            - for(var i = 0; i < destinations.length; i++) {
+            - for(let i = 0; i < destinations.length; i++) {
               - if(i % 3 === 0) {
                 div.row
               - }
@@ -93,7 +93,7 @@ html(lang="en")
             } else {
               $(".parent-has-error").attr("data-original-title", '').tooltip("fixTitle").tooltip("hide")
               $(".has-error").removeClass("has-error")
-              for(var element in res.responseJSON.invalid) {
+              for(let element in res.responseJSON.invalid) {
                 if(!res.responseJSON.invalid.hasOwnProperty(element)) return
                 $(element).addClass("parent-has-error")
                 if($(element).parents(".input-group", ".btn-group").length) {
@@ -107,7 +107,7 @@ html(lang="en")
         }).done()
       }
 
-      var timer = 0
+      let timer = 0
       $("input").on("input", function() {
         clearTimeout(timer)
         timer = setTimeout(function() {
@@ -138,7 +138,7 @@ html(lang="en")
               if($("div#submit-alert").parent("a").length > 0) return
               $("div#submit-alert").wrap("<a href='javascript:window.location.replace(\"login\")'></a>")
             } else {
-              for(var element in res.responseJSON) {
+              for(let element in res.responseJSON) {
                 if(!res.responseJSON.hasOwnProperty(element)) return
                 if($(element).parents(".input-group", ".btn.group").length > 0) {
                   $(element).tooltip({ container: "body" })
