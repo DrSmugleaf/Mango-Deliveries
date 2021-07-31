@@ -13,6 +13,7 @@ import request from "request-promise"
 import * as settings from "../models/eve/settings.js"
 import crypto from "crypto"
 import { env } from "../env/index.js"
+import { HTTPStatusCodes } from "web/index.js"
 
 declare module "express-session" {
   interface SessionData {
@@ -26,6 +27,17 @@ declare module "express-session" {
 export interface Alert {
   error?: boolean
   alert: string
+}
+
+export interface ContractsResponse {
+  character: character.EveCharacters
+  pending: contract.EveContractsAttributes[],
+  ongoing: contract.EveContractsAttributes[],
+  finalized: contract.EveContractsAttributes[],
+  director: boolean,
+  freighter: boolean,
+  title: string,
+  active: string
 }
 
 export interface DirectorSettingsBody {
@@ -48,7 +60,7 @@ export function init(): void {
     res.redirect(`https://login.eveonline.com/oauth/authorize/?response_type=code&redirect_uri=${env(process.env.EVE_CALLBACK)}&client_id=${env(process.env.EVE_ID)}&state=${state}`)
   })
 
-  router.get("/callback", async function(req: Request, res: Response): Promise<void> {
+  router.post("/callback", async function(req: Request, res: Response): Promise<void> {
     const sessionState = req.session.state
     delete req.session.state
 
@@ -118,8 +130,8 @@ export function init(): void {
 
     const corporationName = body[0].name
     const corporationPortrait = body[1].px64x64.replace(/^http:\/\//i, "https://")
-    let allianceName: string | null = null
-    let alliancePortrait: string | null = null
+    let allianceName: string | undefined = undefined
+    let alliancePortrait: string | undefined = undefined
 
     if (body.length == 4) {
       allianceName = body[2].alliance_name
@@ -154,7 +166,7 @@ export function init(): void {
     const isAllowed = !userBanned && (allianceAllowed || corporationAllowed || isDirector || isFreighter)
 
     if (!isAllowed) {
-      res.render("pages/unauthorized")
+      res.redirect("/unauthorized")
       return
     }
 
@@ -162,13 +174,21 @@ export function init(): void {
     res.redirect("/")
   })
 
-  router.get("/", async function(req: Request, res: Response): Promise<void> {
-    res.render("pages/index", {
+  router.get("/index", async function(req: Request, res: Response): Promise<void> {
+    res.status(200).json({
       character: req.session.character || {},
       destinations: await destination.getAll(),
       title: "Home - Mango Deliveries",
       active: "Home"
     })
+  })
+
+  router.get("/character", async function(req: Request, res: Response): Promise<void> {
+    if (!req.session.character) {
+      res.redirect("/login")
+    }
+
+    res.status(200).json(req.session.character)
   })
 
   router.get("/query", async function(req: Request, res: Response): Promise<void> {
@@ -311,7 +331,7 @@ export function init(): void {
     const ongoing = contracts[1]
     const finalized = contracts[2]
 
-    res.render("pages/contracts", {
+    res.status(HTTPStatusCodes.OK).json({
       character: req.session.character || {},
       pendingContracts: pending,
       ongoingContracts: ongoing,
@@ -356,7 +376,10 @@ export function init(): void {
   })
 
   router.get("/director", eveAuth, async function(req: Request, res: Response): Promise<void> {
-    if (!req.session.character?.director) return res.redirect("/eve/eve")
+    if (!req.session.character?.director) {
+      res.status(HTTPStatusCodes.Forbidden).redirect(`/${HTTPStatusCodes.Forbidden}`)
+      return
+    }
 
     const bannedUsers = await character.getBanned()
     const freighters = await character.getFreighters()
@@ -366,7 +389,7 @@ export function init(): void {
     const bannedMarketGroups = await invmarketgroups.getBanned()
     const eveSettings = await settings.get()
 
-    res.render("pages/director", {
+    res.status(200).json({
       character: req.session.character || {},
       title: "Director Panel - Mango Deliveries",
       active: "Director Panel",

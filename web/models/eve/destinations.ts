@@ -1,13 +1,13 @@
 import { DataTypes, Model, Sequelize } from "sequelize"
 
-interface EveDestinationsAttributes {
+export interface EveDestinationsAttributes {
   name: string,
   image: string
 }
 
-class EveDestinations extends Model<EveDestinationsAttributes> implements EveDestinationsAttributes {
-  name: string
-  image: string
+export class EveDestinations extends Model<EveDestinationsAttributes> implements EveDestinationsAttributes {
+  name!: string
+  image!: string
 }
 
 export function init(db: Sequelize): void {

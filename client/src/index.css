@@ -1,0 +1,90 @@
+html, body, #root {
+  height: 100%
+}
+
+.index-template {
+  padding: 40px 15px;
+  text-align: center;
+}
+
+.error-template {
+  padding: 40px 15px;
+  text-align: center;
+}
+
+.error-actions {
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
+
+.error-actions .btn {
+  margin-right: 10px;
+}
+
+.navbar-right li a {
+  text-align: right;
+}
+
+.tooltip-inner {
+  white-space: pre-wrap;
+}
+
+.destination-image {
+  padding: 0px;
+}
+
+.character-image {
+  height: 50px;
+}
+
+.loader {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.loader-wheel {
+  animation: spin 1s infinite linear;
+  border: 2px solid #fff;
+  border-left: 4px solid rgb(30, 30, 30, 0.5);
+  border-radius: 50%;
+  height: 50px;
+  margin-bottom: 10px;
+  width: 50px;
+}
+
+.loader-text {
+  font-family: arial, sans-serif;
+}
+
+.loader-text:after {
+  content: 'Loading';
+  animation: load 2s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes load {
+  0% {
+    content: 'Loading';
+  }
+  25% {
+    content: 'Loading.';
+  }
+  50% {
+    content: 'Loading..';
+  }
+  75% {
+    content: 'Loading...';
+  }
+}

@@ -5,7 +5,7 @@ export interface SettingsAttributes {
 }
 
 class Settings extends Model<SettingsAttributes> implements SettingsAttributes {
-  maxVolume: number
+  maxVolume!: number
 }
 
 export function init(db: Sequelize): void {

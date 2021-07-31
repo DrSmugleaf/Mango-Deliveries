@@ -9,9 +9,9 @@ export interface EveCharacterAttributes {
   corporationId: number,
   corporationName: string,
   corporationPortrait: string,
-  allianceId: string | null,
-  allianceName: string | null,
-  alliancePortrait: string | null,
+  allianceId: string | undefined,
+  allianceName: string | undefined,
+  alliancePortrait: string | undefined,
   freighter: boolean,
   director: boolean
 }
@@ -21,23 +21,23 @@ export interface EveBannedCharacterAttributes {
 }
 
 export class EveCharacters extends Model<EveCharacterAttributes> {
-  id: number
-  token: string
-  characterName: string
-  characterPortrait: string
-  characterBirthday: string
-  corporationId: number
-  corporationName: string
-  corporationPortrait: string
-  allianceId: string | null
-  allianceName: string | null
-  alliancePortrait: string | null
-  freighter: boolean
-  director: boolean
+  id!: number
+  token!: string
+  characterName!: string
+  characterPortrait!: string
+  characterBirthday!: string
+  corporationId!: number
+  corporationName!: string
+  corporationPortrait!: string
+  allianceId!: string | undefined
+  allianceName!: string | undefined
+  alliancePortrait!: string | undefined
+  freighter!: boolean
+  director!: boolean
 }
 
 export class EveBannedCharacters extends Model<EveBannedCharacterAttributes> implements EveBannedCharacterAttributes {
-  name: string
+  name!: string
 }
 
 export function init(db: Sequelize): void {

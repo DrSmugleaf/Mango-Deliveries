@@ -6,8 +6,8 @@ export interface InvVolumesAttributes {
 }
 
 class InvVolumes extends Model<InvVolumesAttributes> implements InvVolumesAttributes {
-  typeId: number
-  volume: string
+  typeId!: number
+  volume!: string
 }
 
 export function init(db: Sequelize): void {

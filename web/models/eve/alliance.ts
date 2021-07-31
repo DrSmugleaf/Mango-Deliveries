@@ -1,11 +1,11 @@
 import { DataTypes, Model, Sequelize } from "sequelize"
 
-interface AllowedAlliancesAttributes {
+export interface AllowedAlliancesAttributes {
   name: string
 }
 
 class AllowedAlliances extends Model<AllowedAlliancesAttributes> implements AllowedAlliancesAttributes {
-  name: string
+  name!: string
 }
 
 export function init(db: Sequelize): void {

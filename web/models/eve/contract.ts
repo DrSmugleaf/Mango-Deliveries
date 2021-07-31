@@ -1,6 +1,6 @@
 import { DataTypes, Model, Sequelize, Optional, Op } from "sequelize"
 
-interface EveContractsAttributes {
+export interface EveContractsAttributes {
   id: number,
   link: string,
   destination: string,
@@ -26,28 +26,28 @@ interface EveContractsAttributes {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-interface EveContractsCreationAttributes extends Optional<EveContractsAttributes, "id"> {}
+export interface EveContractsCreationAttributes extends Optional<EveContractsAttributes, "id"> {}
 
 class EveContracts extends Model<EveContractsAttributes, EveContractsCreationAttributes> implements EveContractsAttributes {
-  id: number
-  link: string
-  destination: string
-  value: number
-  valueFormatted: string
-  valueShort: string
-  quote: number
-  quoteFormatted: string
-  quoteShort: string
-  volume: number
-  volumeFormatted: string
-  valueVolumeRatio: number
-  valueVolumeRatioFormatted: string
-  multiplier: number
-  submitterId: number
-  submitterName: string
-  submitted: number
-  submittedFormatted: string
-  status: string
+  id!: number
+  link!: string
+  destination!: string
+  value!: number
+  valueFormatted!: string
+  valueShort!: string
+  quote!: number
+  quoteFormatted!: string
+  quoteShort!: string
+  volume!: number
+  volumeFormatted!: string
+  valueVolumeRatio!: number
+  valueVolumeRatioFormatted!: string
+  multiplier!: number
+  submitterId!: number
+  submitterName!: string
+  submitted!: number
+  submittedFormatted!: string
+  status!: string
   freighterId?: number
   freighterName?: string
   taxed?: boolean

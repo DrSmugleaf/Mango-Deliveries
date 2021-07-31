@@ -1,5 +1,6 @@
 import { Router } from "express"
-import { router as eveRouter, init as eveInit } from "./eve.js"
+import { HTTPStatusCodes } from "web"
+import { router as eveRouter, init as eveInit } from "./eve"
 
 export let router: Router
 
@@ -11,6 +12,6 @@ export function init(): void {
   router.use("/", eveRouter)
 
   router.get("*", function(req, res) {
-    res.render("pages/404")
+    res.sendStatus(HTTPStatusCodes.NotFound)
   })
 }

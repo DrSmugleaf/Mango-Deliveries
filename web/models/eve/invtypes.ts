@@ -8,13 +8,13 @@ export interface InvTypesAttributes {
 }
 
 export class InvTypes extends Model<InvTypesAttributes> implements InvTypesAttributes {
-  itemId: number
-  itemName: string
+  itemId!: number
+  itemName!: string
 }
 
 export class EveBannedTypes extends Model<InvTypesAttributes> implements InvTypesAttributes {
-  itemId: number
-  itemName: string
+  itemId!: number
+  itemName!: string
 }
 
 function getTableDefinition() {

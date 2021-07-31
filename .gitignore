@@ -17,3 +17,6 @@ docker-compose.yml
 
 # TypeScript
 dist/
+
+# React
+build/

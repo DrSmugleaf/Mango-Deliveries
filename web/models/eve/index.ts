@@ -11,7 +11,7 @@ import * as settings from "./settings.js"
 
 export { alliance, character, contract, corporation, destinations, invmarketgroups, invtypes, invvolumes, settings }
 
-import * as models from "."
+import * as models from "./index.js"
 
 export function init(db: Sequelize): void {
   for (const model of Object.values(models)) {

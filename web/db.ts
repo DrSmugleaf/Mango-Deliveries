@@ -1,11 +1,11 @@
-import Sequelize from "sequelize"
-import { env } from "./env"
-import * as models from "./models/eve"
+import { Sequelize } from "sequelize"
+import { env } from "./env/index.js"
+import * as models from "./models/eve/index.js"
 
-export let db: Sequelize.Sequelize
+export let db: Sequelize
 
 export function init(): void {
-  db = new Sequelize.Sequelize(env(process.env.MYSQL_DATABASE), env(process.env.MYSQL_USER), env(process.env.MYSQL_PASSWORD), {
+  db = new Sequelize(env(process.env.MYSQL_DATABASE), env(process.env.MYSQL_USER), env(process.env.MYSQL_PASSWORD), {
     host: env(process.env.MYSQL_HOST, "localhost"),
     port: parseInt(env(process.env.MYSQL_PORT, "3306"), 10),
     pool: {

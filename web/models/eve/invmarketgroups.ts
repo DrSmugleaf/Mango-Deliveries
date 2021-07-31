@@ -1,6 +1,6 @@
 import { DataTypes, Model, Sequelize } from "sequelize"
 
-interface InvMarketGroupsAttributes {
+export interface InvMarketGroupsAttributes {
   marketGroupId: number,
   marketGroupName: string,
   description: string | null,
@@ -9,19 +9,19 @@ interface InvMarketGroupsAttributes {
 }
 
 class InvMarketGroups extends Model<InvMarketGroupsAttributes> implements InvMarketGroupsAttributes {
-  marketGroupId: number
-  marketGroupName: string
-  description: string | null
-  iconId: number | null
-  parentGroupId: number | null
+  marketGroupId!: number
+  marketGroupName!: string
+  description!: string | null
+  iconId!: number | null
+  parentGroupId!: number | null
 }
 
 class EveBannedMarketGroups extends Model<InvMarketGroupsAttributes> implements InvMarketGroupsAttributes {
-  marketGroupId: number
-  marketGroupName: string
-  description: string | null
-  iconId: number | null
-  parentGroupId: number | null
+  marketGroupId!: number
+  marketGroupName!: string
+  description!: string | null
+  iconId!: number | null
+  parentGroupId!: number | null
 }
 
 function getTableDefinition() {
