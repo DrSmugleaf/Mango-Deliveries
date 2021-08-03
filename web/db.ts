@@ -5,11 +5,11 @@ import * as models from "./models/eve/index.js"
 export let db: Sequelize
 
 export function init(): void {
-  db = new Sequelize(env(process.env.MYSQL_DATABASE), env(process.env.MYSQL_USER), env(process.env.MYSQL_PASSWORD), {
-    host: env(process.env.MYSQL_HOST, "localhost"),
-    port: parseInt(env(process.env.MYSQL_PORT, "3306"), 10),
+  db = new Sequelize(env("MYSQL_DATABASE"), env("MYSQL_USER"), env("MYSQL_PASSWORD"), {
+    host: env("MYSQL_HOST", "localhost"),
+    port: parseInt(env("MYSQL_PORT", "3306"), 10),
     pool: {
-      max: parseInt(env(process.env.MYSQL_CONNECTION_LIMIT, "10"), 10)
+      max: parseInt(env("MYSQL_CONNECTION_LIMIT", "10"), 10)
     },
     dialect: "mysql"
   })

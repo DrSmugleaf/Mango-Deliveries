@@ -7,13 +7,16 @@
   },
   "main": "dist/bin/www.js",
   "scripts": {
+    "postinstall": "cd client && npm install",
     "clean": "rimraf dist/*",
     "lint": "eslint \"**/*.ts\"",
     "tsc": "tsc",
     "build": "npm-run-all clean lint tsc",
     "start": "node --harmony --trace-warnings .",
     "start:dev": "nodemon --harmony --trace-warnings .",
-    "dev": "npm-run-all build start:dev"
+    "dev:server": "npm-run-all build start:dev",
+    "dev:client": "cd client && npm run build:start",
+    "dev": "npm-run-all --parallel dev:server dev:client"
   },
   "repository": {
     "type": "git",

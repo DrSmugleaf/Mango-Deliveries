@@ -17,7 +17,7 @@ import sequelizeSession from "connect-session-sequelize"
 import { db } from "../web/db.js"
 import { HTTPStatusCodes } from "./index.js"
 
-app.use(cookieParser(env(process.env.EVE_DELIVERIES_SESSION_SECRET)))
+app.use(cookieParser(env("EVE_DELIVERIES_SESSION_SECRET")))
 app.use(helmet({
   contentSecurityPolicy: {
     reportOnly: true
@@ -35,7 +35,7 @@ const Store = new SequelizeStore({
 
 app.use(session({
   name: "mango deliveries",
-  secret: env(process.env.EVE_DELIVERIES_SESSION_SECRET),
+  secret: env("EVE_DELIVERIES_SESSION_SECRET"),
   store: Store,
   resave: false,
   saveUninitialized: false,

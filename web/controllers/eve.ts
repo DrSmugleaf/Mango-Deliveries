@@ -57,7 +57,7 @@ export function init(): void {
   router.get("/login", function(req: Request, res: Response): void {
     const state = crypto.randomBytes(64).toString("hex")
     req.session.state = state
-    res.redirect(`https://login.eveonline.com/oauth/authorize/?response_type=code&redirect_uri=${env(process.env.EVE_CALLBACK)}&client_id=${env(process.env.EVE_ID)}&state=${state}`)
+    res.redirect(`https://login.eveonline.com/oauth/authorize/?response_type=code&redirect_uri=${env("EVE_CALLBACK")}&client_id=${env("EVE_ID")}&state=${state}`)
   })
 
   router.post("/callback", async function(req: Request, res: Response): Promise<void> {
@@ -71,7 +71,7 @@ export function init(): void {
 
     let body = await request.post({
       headers: {
-        "Authorization": `Basic ${new Buffer(`${env(process.env.EVE_ID)}:${env(process.env.EVE_SECRET)}`).toString("base64")}`
+        "Authorization": `Basic ${new Buffer(`${env("EVE_ID")}:${env("EVE_SECRET")}`).toString("base64")}`
       },
       url: "https://login.eveonline.com/oauth/token",
       form: {

@@ -55,7 +55,7 @@ function normalizePort(val: string): string | number | boolean {
  * Event listener for HTTP server "error" event.
  */
 
-function onError(error: NodeJS.ErrnoException): void {
+function onError(error: NodeJS.ErrnoException): never {
   if (error.syscall !== "listen") {
     throw error
   }
