@@ -13,7 +13,7 @@
     "tsc": "tsc",
     "build": "npm-run-all clean lint tsc",
     "start": "node --harmony --trace-warnings .",
-    "start:dev": "nodemon --harmony --trace-warnings .",
+    "start:dev": "nodemon --harmony --trace-warnings --watch \"src/**\" --ext \"ts,json\" .",
     "dev:server": "npm-run-all build start:dev",
     "dev:client": "cd client && npm run build:start",
     "dev": "npm-run-all --parallel dev:server dev:client"
