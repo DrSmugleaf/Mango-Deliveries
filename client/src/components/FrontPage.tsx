@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState, MouseEventHandler } from "react"
 import fetchJson from "../fetch"
 import Loading from "./Loading"
 import Navigation from "./Navigation"
@@ -16,8 +16,8 @@ interface EveData {
     destinations: EveDestinations[]
 }
 
-function renderDestination(first: boolean, destination: EveDestinations) {
-    return <div className={first ? "col-md-2 col-md-offset-3" : "col-md-2"}>
+function renderDestination(first: boolean, destination: EveDestinations, onClick: MouseEventHandler<HTMLDivElement>) {
+    return <div className={first ? "col-md-2 col-md-offset-3" : "col-md-2"} onClick={onClick}>
         <div className="panel panel-default">
             <div className="panel-heading">{destination.name}</div>
             <div className="panel-body destination-image">
@@ -29,6 +29,7 @@ function renderDestination(first: boolean, destination: EveDestinations) {
 
 export default function FrontPage(): JSX.Element {
     const [data, setData] = useState<EveData>()
+    const [destination, setDestination] = useState<string>("")
 
     useEffect(() => {
         const fetchData = async () => await fetchJson("/index", setData)
@@ -39,7 +40,7 @@ export default function FrontPage(): JSX.Element {
         <Navigation home={true}/>
         <div className="jumbotron">
             <div className="container">
-                <h1>Mango Deliveries</h1>
+                <h1 className="pt-2">Mango Deliveries</h1>
                 <p>Welcome to Horde's finest Delivery service. We buy and ship your stuff for you. Select an Image to choose your destination. We offer a 24-hour guarantee of delivery.</p>
             </div>
         </div>
@@ -48,15 +49,13 @@ export default function FrontPage(): JSX.Element {
                 <div id="submit-alert" className="alert" role="alert"/>
             </div>
             <form method="post" action="/submit">
-                <div id="image_container">
-                    {data.destinations.map((value: any, index: number) => {
+                <div className="row">
+                    {data.destinations.map((value: EveDestinations, index: number) => {
                         if (index % 3 === 0) {
-                            return <div className="row">
-                                {renderDestination(true, value)}
-                            </div>
+                            return renderDestination(true, value, _ => setDestination(value.name))
                         }
 
-                        return renderDestination(false, value)
+                        return renderDestination(false, value, _ => setDestination(value.name))
                     })}
                 </div>
                 <div className="row">
@@ -84,7 +83,7 @@ export default function FrontPage(): JSX.Element {
                                         <div className="row">
                                             <label className="col-md-3" htmlFor="destination">Destination</label>
                                             <div className="col-md-9">
-                                                <input name="destination" className="form-control" type="text" id="destination" autoComplete="off" readOnly={true}></input>
+                                                <input name="destination" className="form-control" type="text" id="destination" autoComplete="off" readOnly={true} value={destination}></input>
                                             </div>
                                         </div>
                                     </div>
