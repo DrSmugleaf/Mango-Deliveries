@@ -35,4 +35,4 @@ Mango Deliveries is a freighting website for EVE Online.
 ![chrome_7uJ52AvTSK](https://user-images.githubusercontent.com/10968691/129737208-e37a1f5b-4972-463b-b00c-698b22eed163.png)
 
 ## Director Panel
-![evedirectors](https://user-images.githubusercontent.com/10968691/129738141-7c3a60aa-803d-4e45-8466-c7521e13bca3.gif)
+![evedirectors](https://user-images.githubusercontent.com/10968691/129738840-081e2107-0f1b-47ce-b830-75e2d021cbaf.gif)
